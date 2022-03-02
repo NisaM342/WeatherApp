@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <ImageView
+        android:id="@+id/weatherImage"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/WeatherDate"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="5dp"
+        android:paddingTop="25dp"
+        android:textSize="16dp"
+        app:layout_constraintStart_toEndOf="@id/weatherImage" />
+
+    <TextView
+        android:id="@+id/WeatherTemp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="12dp"
+        android:textSize="10dp"
+        app:layout_constraintHeight="20dp"
+        app:layout_constraintStart_toEndOf="@id/WeatherDate"
+        app:layout_constraintWidth="100dp" />
+
+    <TextView
+        android:id="@+id/WeatherHigh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="12dp"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight="25dp"
+        app:layout_constraintStart_toEndOf="@id/WeatherDate"
+        app:layout_constraintWidth="80dp" />
+    <TextView
+        android:id="@+id/WeatherLow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="12dp"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight="25dp"
+        app:layout_constraintStart_toEndOf="@id/WeatherHigh"
+        app:layout_constraintWidth="80dp"
+        app:layout_constraintEnd_toStartOf="@id/Sunrise"
+        />
+
+    <TextView
+        android:id="@+id/Sunrise"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="12dp"
+        android:textSize="10dp"
+        app:layout_constraintWidth="130dp"
+        app:layout_constraintHeight="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/Sunset"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="12dp"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="25dp"
+        app:layout_constraintWidth="130dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
