@@ -22,6 +22,7 @@ class ForecastActivity : AppCompatActivity() {
     private lateinit var binding: ActivityForecastBinding
     @Inject lateinit var viewModel: ForecastViewModel
 
+    private lateinit var myZip : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityForecastBinding.inflate(layoutInflater)
@@ -35,10 +36,10 @@ class ForecastActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.forecast.observe(this){
+        viewModel.mutateForecast.observe(this){
                 forecast -> bindData(forecast)
         }
-        viewModel.loadData()
+        viewModel.loadData(myZip)
     }
 
     private fun bindData(forecast: Forecast) {

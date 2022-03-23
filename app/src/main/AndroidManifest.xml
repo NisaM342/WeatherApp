@@ -13,7 +13,7 @@
         <activity
             android:name=".ForecastActivity"
             android:exported="false"
-            android:label="@string/MyForecast" />
+            android:label="Forecast" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
