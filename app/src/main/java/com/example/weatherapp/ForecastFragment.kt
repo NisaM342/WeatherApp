@@ -2,63 +2,45 @@ package com.example.weatherapp
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.databinding.FragmentForecastBinding
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
 import javax.inject.Inject
+
 @AndroidEntryPoint
-
-class ForecastFragment : Fragment() {
-
-    @Inject
-    lateinit var viewModel: ForecastViewModel
+class ForecastFragment : Fragment(R.layout.fragment_forecast) {
+    private val args by navArgs<ForecastFragmentArgs>()
     private lateinit var binding: FragmentForecastBinding
-    private lateinit var myZip : String
-    private val args: ForecastFragmentArgs by navArgs()
+    @Inject lateinit var viewModel: ForecastViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_forecast, container, false)
-    }
-
-    override fun onViewCreated( view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentForecastBinding.bind(view)
-
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
-
-        myZip = args.zipCode
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.mutateForecast.observe(this) { forecast ->
-            bindData(forecast)
+        viewModel.forecast.observe(this) {
+                forecast -> bindData(forecast)
         }
 
-
-        try
-        {
-            viewModel.loadData(myZip)
-        }
-        catch (e: HttpException)
-        {
-
+        try {
+            if(args.zipCode.length == 5 && args.zipCode.all { it.isDigit() }) {
+                viewModel.loadData(args.zipCode)
+            } else {
+                viewModel.loadData(args.latitude, args.longitude)
+            }
+        } catch (exception: HttpException) {
             ErrorDialogFragment().show(childFragmentManager, "")
-
         }
     }
 
-    private fun bindData(forecast: Forecast) {
-        binding.recyclerView.adapter = MyAdapter(forecast.list)
+    private fun bindData(foreCast: Forecast) {
+        binding.recyclerView.adapter = MyAdapter(foreCast.list)
     }
 
 }

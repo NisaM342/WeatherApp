@@ -8,12 +8,21 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class ForecastViewModel @Inject constructor(private val service: Api): ViewModel() {
-     val mutateForecast = MutableLiveData<Forecast>()
+    private val theForecast = MutableLiveData<Forecast>()
+    val forecast: LiveData<Forecast>
+        get() = theForecast
 
-
-    fun loadData(myZip: String) = runBlocking {
+    fun loadData(zipCode: String) = runBlocking {
         launch {
-            mutateForecast.value = service.getForecast(myZip)
+            theForecast.value = service.getForecast(zipCode)
+        }
+
+    }
+
+    fun loadData(latitude: Float, longitude: Float) = runBlocking {
+        launch{
+            theForecast.value = service.getForecastLatLon(latitude, longitude)
         }
     }
+
 }

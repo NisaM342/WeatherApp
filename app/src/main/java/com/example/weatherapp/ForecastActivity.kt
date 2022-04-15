@@ -36,7 +36,7 @@ class ForecastActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.mutateForecast.observe(this){
+        viewModel.forecast.observe(this){
                 forecast -> bindData(forecast)
         }
         viewModel.loadData(myZip)

@@ -1,11 +1,9 @@
 package com.example.weatherapp
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherapp.databinding.DataRowBinding
@@ -14,29 +12,28 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class MyAdapter (private val data: List<DayForecast>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(private val data: List<DayForecast>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
     @SuppressLint("NewApi")
-    class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = DataRowBinding.bind(view)
-        private val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd")
-        private val timeFormatter = DateTimeFormatter.ofPattern("h:mma")
+        private val dateFormatter = DateTimeFormatter.ofPattern("MMM dd")
+        private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
 
         fun bind(data: DayForecast) {
             val dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(data.dt), ZoneId.systemDefault())
             val sunrise = LocalDateTime.ofInstant(Instant.ofEpochSecond(data.sunrise), ZoneId.systemDefault())
             val sunset = LocalDateTime.ofInstant(Instant.ofEpochSecond(data.sunset), ZoneId.systemDefault())
-            binding.date.text = dateTimeFormatter.format(dateTime)
-            binding.sunriseTime.text = timeFormatter.format(sunrise)
-            binding.sunsetTime.text = timeFormatter.format(sunset)
-            binding.dayTemp.text = data.temp.day.toInt().toString() + "°"
-            binding.maxTemp.text = data.temp.max.toInt().toString() + "°"
-            binding.minTemp.text = data.temp.min.toInt().toString() + "°"
-
             val weather = data.weather.firstOrNull()?.icon
             Glide.with(binding.forecastIcon)
                 .load("https://openweathermap.org/img/wn/${weather}@2x.png")
                 .into(binding.forecastIcon)
 
+            binding.date.text = dateFormatter.format(dateTime)
+            binding.sunrise.append(timeFormatter.format(sunrise))
+            binding.sunset.append(timeFormatter.format(sunset))
+            binding.temp.append(data.temp.day.toInt().toString() + "°")
+            binding.high.append(data.temp.max.toInt().toString() + "°")
+            binding.low.append(data.temp.min.toInt().toString() + "°")
         }
 
     }
@@ -47,10 +44,10 @@ class MyAdapter (private val data: List<DayForecast>) : RecyclerView.Adapter<MyA
         return ViewHolder(view)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(data[position])
     }
 
     override fun getItemCount() = data.size
+
 }
