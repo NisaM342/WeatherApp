@@ -1,59 +1,39 @@
 package com.example.weatherapp
 
-import android.os.Build
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.weatherapp.databinding.DataRowBinding
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-class MyAdapter (private val data: List<DayForecast>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(private val data: List<DayForecast>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+    @SuppressLint("NewApi")
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = DataRowBinding.bind(view)
+        private val dateFormatter = DateTimeFormatter.ofPattern("MMM dd")
+        private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
 
-    class ViewHolder (val view: View) : RecyclerView.ViewHolder(view) {
-        private val dateView: TextView = view.findViewById(R.id.WeatherDate)
-        private val sunriseView: TextView = view.findViewById(R.id.Sunrise)
-        private val sunsetView: TextView = view.findViewById(R.id.Sunset)
-        private val tempViewHigh: TextView = view.findViewById(R.id.WeatherHigh)
-        private val tempViewLow: TextView = view.findViewById(R.id.WeatherLow)
-        private val tempView: TextView = view.findViewById(R.id.WeatherTemp)
-        private val theImage: ImageView = view.findViewById(R.id.weatherImage)
-
-        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(data: DayForecast) {
-            dateView.text = data.date.toString()
-            theImage.setImageDrawable(view.context.getDrawable(data.image))
+            val dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(data.dt), ZoneId.systemDefault())
+            val sunrise = LocalDateTime.ofInstant(Instant.ofEpochSecond(data.sunrise), ZoneId.systemDefault())
+            val sunset = LocalDateTime.ofInstant(Instant.ofEpochSecond(data.sunset), ZoneId.systemDefault())
+            val weather = data.weather.firstOrNull()?.icon
+            Glide.with(binding.forecastIcon)
+                .load("https://openweathermap.org/img/wn/${weather}@2x.png")
+                .into(binding.forecastIcon)
 
-
-            val instant = Instant.ofEpochSecond(data.date)
-            val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-            val formatter = DateTimeFormatter.ofPattern("MMM dd")
-            dateView.text = formatter.format(dateTime)
-
-
-            tempView.text = "Temp: " + data.temp.day.toInt().toString() + "°"
-
-            tempViewHigh.text = "High: " + data.temp.high.toInt().toString() + "°"
-
-            tempViewLow.text = "Low: " +  data.temp.low.toInt().toString() + "°"
-
-
-            val sunriseInstant = Instant.ofEpochSecond(data.sunrise)
-            val sunriseTime = LocalDateTime.ofInstant(sunriseInstant, ZoneId.systemDefault())
-            val sunriseFormatter = DateTimeFormatter.ofPattern("HH:MM a")
-
-            sunriseView.text = "Sunrise: "+ sunriseFormatter.format(sunriseTime)
-
-            val sunsetInstant = Instant.ofEpochSecond(data.sunset)
-            val sunsetTime = LocalDateTime.ofInstant(sunsetInstant, ZoneId.systemDefault())
-            val sunsetFormatter = DateTimeFormatter.ofPattern("HH:MM a")
-
-            sunsetView.text = "Sunset: "+ sunsetFormatter.format(sunsetTime)
+            binding.date.text = dateFormatter.format(dateTime)
+            binding.sunrise.append(timeFormatter.format(sunrise))
+            binding.sunset.append(timeFormatter.format(sunset))
+            binding.temp.append(data.temp.day.toInt().toString() + "°")
+            binding.high.append(data.temp.max.toInt().toString() + "°")
+            binding.low.append(data.temp.min.toInt().toString() + "°")
         }
 
     }
@@ -64,10 +44,10 @@ class MyAdapter (private val data: List<DayForecast>) : RecyclerView.Adapter<MyA
         return ViewHolder(view)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(data[position])
     }
 
     override fun getItemCount() = data.size
+
 }
