@@ -10,6 +10,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ok">OK</string>
+    <string name="notification">Get Notification</string>
+    <string name="turn_notification_on">Notification On</string>
+    <string name="turn_notification_off">Notification Off</string>
+    <string name="notify_location">Location: %1$s</string>
+    <string name="notify_currentTemp">Current Temp: %1$d°</string>
 
 
 </resources>
