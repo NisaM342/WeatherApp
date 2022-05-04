@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>CurrentConditionsFragment.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CurrentConditionsFragment.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.example.weatherapp</span>
+
+<span class="s1">import android.content.ContentValues</span>
+<span class="s1">import android.os.Bundle</span>
+<span class="s1">import android.util.Log</span>
+<span class="s1">import androidx.fragment.app.Fragment</span>
+<span class="s1">import android.view.LayoutInflater</span>
+<span class="s1">import android.view.View</span>
+<span class="s1">import android.view.ViewGroup</span>
+<span class="s1">import androidx.navigation.fragment.findNavController</span>
+<span class="s1">import androidx.navigation.fragment.navArgs</span>
+<span class="s1">import com.bumptech.glide.Glide</span>
+<span class="s1">import com.example.weatherapp.databinding.FragmentCurrentConditionBinding</span>
+<span class="s1">import dagger.hilt.android.AndroidEntryPoint</span>
+<span class="s1">import retrofit2.HttpException</span>
+<span class="s1">import javax.inject.Inject</span>
+
+<span class="s1">@AndroidEntryPoint</span>
+<span class="s0">class </span><span class="s1">CurrentConditionsFragment : Fragment(R.layout.fragment_current_condition) {</span>
+    <span class="s1">@Inject</span>
+    <span class="s1">lateinit </span><span class="s0">var </span><span class="s1">viewModel: CurrentConditionsViewModel</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">binding: FragmentCurrentConditionBinding</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">args: CurrentConditionsFragmentArgs by navArgs()</span>
+
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateView(</span>
+        <span class="s1">inflater: LayoutInflater</span><span class="s0">,</span>
+        <span class="s1">container: ViewGroup?</span><span class="s0">,</span>
+        <span class="s1">savedInstanceState: Bundle?</span>
+    <span class="s1">): View? {</span>
+        <span class="s0">return </span><span class="s1">inflater.inflate(R.layout.fragment_current_condition</span><span class="s0">, </span><span class="s1">container</span><span class="s0">, false</span><span class="s1">)</span>
+    <span class="s1">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onViewCreated(view: View</span><span class="s0">, </span><span class="s1">savedInstanceState: Bundle?) {</span>
+        <span class="s0">super</span><span class="s1">.onViewCreated(view</span><span class="s0">, </span><span class="s1">savedInstanceState)</span>
+
+        <span class="s1">binding = FragmentCurrentConditionBinding.bind(view)</span>
+
+
+        <span class="s1">binding.forecastBtn.setOnClickListener{</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onResume() {</span>
+
+        <span class="s0">super</span><span class="s1">.onResume()</span>
+        <span class="s1">viewModel.currentConditions.observe(</span><span class="s0">this</span><span class="s1">)</span>
+        <span class="s1">{</span>
+                <span class="s1">currentConditions -&gt;</span>
+            <span class="s1">bindData(currentConditions)</span>
+        <span class="s1">}</span>
+        <span class="s1">Log.d(ContentValues.TAG</span><span class="s0">, </span><span class="s2">&quot;, Latitude: &quot; </span><span class="s1">+ args.latitude + </span><span class="s2">&quot;, Longitude: &quot; </span><span class="s1">+ args.longitude)</span>
+        <span class="s0">try</span>
+        <span class="s1">{</span>
+            <span class="s0">if</span><span class="s1">(args.zipCode.length == </span><span class="s3">5 </span><span class="s1">&amp;&amp; args.zipCode.all { it.isDigit() }) {</span>
+            <span class="s1">viewModel.loadData(args.zipCode)</span>
+        <span class="s1">}</span>
+            <span class="s0">else </span><span class="s1">{</span>
+                <span class="s1">viewModel.loadData(args.latitude</span><span class="s0">, </span><span class="s1">args.longitude)</span>
+            <span class="s1">}</span>
+        <span class="s1">catch (exception: HttpException){</span>
+
+        <span class="s1">}</span>
+            <span class="s0">if </span><span class="s1">(exception.code().equals(</span><span class="s3">404</span><span class="s1">)){</span>
+
+
+            <span class="s1">ErrorDialogFragment().show(childFragmentManager</span><span class="s0">, </span><span class="s1">ErrorDialogFragment.TAG)</span>
+
+        <span class="s1">}</span>
+
+
+
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">bindData(currentConditions: CurrentConditions) {</span>
+            <span class="s1">binding.cityName.text = currentConditions.name</span>
+            <span class="s1">binding.temperature.text = getString(R.string.temperature</span><span class="s0">, </span><span class="s1">currentConditions.main.temp.toInt())</span>
+            <span class="s1">binding.feelLike.text = getString(R.string.feelLike</span><span class="s0">, </span><span class="s1">currentConditions.main.feelsLike.toInt())</span>
+            <span class="s1">binding.lowTemp.text = getString(R.string.lowTemp</span><span class="s0">, </span><span class="s1">currentConditions.main.tempMin.toInt())</span>
+            <span class="s1">binding.highTemp.text = getString(R.string.highTemp</span><span class="s0">, </span><span class="s1">currentConditions.main.tempMax.toInt())</span>
+            <span class="s1">binding.humidity.text = getString(R.string.humidity</span><span class="s0">, </span><span class="s1">currentConditions.main.humidity.toInt())</span>
+            <span class="s1">binding.pressure.text = getString(R.string.pressure</span><span class="s0">, </span><span class="s1">currentConditions.main.pressure.toInt())</span>
+
+            <span class="s0">val </span><span class="s1">weather = currentConditions.weather.firstOrNull()</span>
+            <span class="s1">weather?.let {</span>
+                <span class="s1">Glide.with(</span><span class="s0">this</span><span class="s1">)</span>
+                    <span class="s1">.load(</span><span class="s2">&quot;https://openweathermap.org/img/wn/</span><span class="s0">${</span><span class="s1">it.icon</span><span class="s0">}</span><span class="s2">@2x.png&quot;</span><span class="s1">)</span>
+                    <span class="s1">.into(binding.weatherIcon)</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">navigationToForecast()</span>
+    <span class="s1">{</span>
+        <span class="s0">val </span><span class="s1">action = CurrentConditionsFragmentDirections.actionCurrentConditionsFragmentToForecastFragment(args.zipCode</span><span class="s0">, </span><span class="s1">args.latitude</span><span class="s0">, </span><span class="s1">args.longitude)</span>
+        <span class="s1">findNavController().navigate(action)</span>
+    <span class="s1">}</span>
+            <span class="s1">)</span></pre>
+</body>
+</html>
