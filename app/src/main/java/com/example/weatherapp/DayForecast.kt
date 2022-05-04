@@ -11,5 +11,6 @@ data class DayForecast(
     val temp: ForecastTemp,
     val pressure: Float,
     val humidity: Int,
-    val weather: List<WeatherCondition>
+    val weather: List<WeatherCondition>,
+    val speed: Float
 ): Parcelable

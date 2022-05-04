@@ -52,5 +52,17 @@
             android:name="longitude"
             app:argType="float"
             android:defaultValue="123" />
+        <action
+            android:id="@+id/action_forecastFragment_to_forecastDetailsFragment"
+            app:destination="@id/forecastDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/forecastDetailsFragment"
+        android:name="com.example.weatherapp.ForecastDetailsFragment"
+        android:label="Forecast Details"
+        app:launchSingleTop="true">
+        <argument
+            android:name="dayForecast"
+            app:argType="com.example.weatherapp.DayForecast"></argument>
     </fragment>
 </navigation>

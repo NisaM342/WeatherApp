@@ -29,6 +29,8 @@ import com.example.weatherapp.ErrorDialogFragment.Companion.TAG
 import com.example.weatherapp.databinding.FragmentSearchBinding
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 
@@ -245,6 +247,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 .create().show();
         } else {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE_COARSE_LOCATION)
+        }
+        runBlocking {
+            delay(2000)
+            requestLocation()
         }
     }
 }

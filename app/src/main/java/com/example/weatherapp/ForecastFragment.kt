@@ -1,8 +1,9 @@
 package com.example.weatherapp
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.databinding.FragmentForecastBinding
@@ -41,6 +42,18 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
 
     private fun bindData(foreCast: Forecast) {
         binding.recyclerView.adapter = MyAdapter(foreCast.list)
+        var adapter = MyAdapter(foreCast.list)
+        binding.recyclerView.adapter = adapter
+        adapter.setOnDayClickListener(object : MyAdapter.OnDayListener {
+            override fun onDayClick(index: Int) {
+                val action =
+                    ForecastFragmentDirections.actionForecastFragmentToForecastDetailsFragment(
+                        viewModel.forecast.value!!.list[index]
+                    )
+                findNavController().navigate(action)
+            }
+
+        })
     }
 
 }
